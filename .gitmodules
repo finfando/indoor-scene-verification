@@ -1,0 +1,3 @@
+[submodule "submodules/ScanNet"]
+	path = submodules/ScanNet
+	url = https://github.com/ScanNet/ScanNet.git
