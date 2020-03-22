@@ -1,3 +1,4 @@
 [submodule "submodules/ScanNet"]
 	path = submodules/ScanNet
-	url = https://github.com/ScanNet/ScanNet.git
+	url = https://github.com/finfando/ScanNet.git
+	branch = python3-code-adjustments
