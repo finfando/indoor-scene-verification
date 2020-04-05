@@ -5,3 +5,4 @@ Pillow==7.0.0
 ImageHash==4.0
 opencv-python==4.2.0.32
 imageio==2.8.0
+matplotlib==3.2.1

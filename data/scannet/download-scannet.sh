@@ -1,6 +1,6 @@
-VIRTUALENV_PATH=/home/filip/.virtualenvs/fdp/bin/activate
-SCENES_LIST_PATH=../submodules/ScanNet/Tasks/Benchmark/scannetv2_val.txt
-OUTPUT_PATH=/data/scannet_test
+VIRTUALENV_PATH=/home/model/.virtualenvs/filip/bin/activate
+SCENES_LIST_PATH=../submodules/ScanNet/Tasks/Benchmark/scannetv2_train.txt
+OUTPUT_PATH=/home/model/users/ff/scannet_data/scannet_train
 
 source $VIRTUALENV_PATH
 while IFS= read -r line <&9; do
