@@ -1,5 +1,6 @@
 import pandas as pd
 from PIL import Image
+import cv2
 import imagehash
 
 class OpenPILImageFromPath:
@@ -7,6 +8,12 @@ class OpenPILImageFromPath:
     """
     def __call__(self, path: str) -> Image:
         return Image.open(path)
+
+class OpenCV2ImageFromPath:
+    def __call__(self, path: str):
+        im = cv2.imread(path, 0)
+        im = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
+        return im
 
 class GetHashFromPath:
     """Open path as PIL Image
@@ -30,3 +37,4 @@ class GetHashFromPath:
                 self.cache[scene] = {}
                 self.cache[scene][image_number] = image_hash
         return image_hash
+

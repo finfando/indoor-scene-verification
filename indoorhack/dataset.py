@@ -47,7 +47,37 @@ class ScanNetIndoorDataset(Dataset):
         
     def _get_random_neg_pair(self, scene):
         other_scenes = self.scenes.copy()
-        other_scenes.remove(scene)
+        other_scenes.remove(scene) # remove also folders from the same scene but with another 
         other_scene = other_scenes[np.random.randint(0, len(other_scenes))]
         pair_idx = np.random.randint(0, other_scene[1])
         return os.path.join(other_scene[0], str(pair_idx)+".jpg")
+
+class ScanNetIndoorImageDataset(Dataset):
+    def __init__(self, path, transformer=None, n_scenes=None):
+        self.path = path
+        self.transformer = transformer
+        self.images = []
+        self.scenes = [(a, len(c), ) for a, _, c in os.walk(self.path) if len(c) > 0]
+        if n_scenes:
+            self.scenes = self.scenes[:n_scenes]
+        for scene in tqdm(self.scenes):
+            self.images += self._get_images(scene)
+            
+    def __getitem__(self, idx):
+        image = self.images[idx]
+        path = image
+        if self.transformer:
+            if isinstance(idx, slice):
+                image = [self.transformer(unit_image) for unit_image in image]
+            else:
+                image = self.transformer(image)
+        return image, path
+    
+    def __len__(self):
+        return len(self.images)
+    
+    def _get_images(self, scene):    
+        img = []
+        for i in range(scene[1]):
+            img.append(os.path.join(scene[0], str(i)+".jpg"))
+        return img
