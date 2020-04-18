@@ -2,3 +2,6 @@
 	path = submodules/ScanNet
 	url = https://github.com/finfando/ScanNet.git
 	branch = python3-code-adjustments
+[submodule "submodules/NetVLAD-pytorch"]
+	path = submodules/NetVLAD-pytorch
+	url = https://github.com/lyakaap/NetVLAD-pytorch.git
