@@ -3,7 +3,8 @@ from PIL import Image
 import cv2
 import imagehash
 from skimage import io, transform
-
+from pathlib import Path
+import h5py
 
 class OpenPILImageFromPath:
     """Open path as PIL Image
@@ -43,3 +44,13 @@ class GetHashFromPath:
                 self.cache[scene] = {}
                 self.cache[scene][image_number] = image_hash
         return image_hash
+
+    
+class GetRepr:
+    """Open path as PIL Image
+    """
+    def __init__(self, path: Path):
+        self.f = h5py.File(path, "r")
+
+    def __call__(self, path: Path):
+        return self.f[path.parts[-1]][:]
