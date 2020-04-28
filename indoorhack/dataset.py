@@ -5,7 +5,8 @@ from PIL import Image
 from tqdm.auto import tqdm
 from torch.utils.data import Dataset
 
-class ScanNetIndoorDataset(Dataset):
+
+class ScanNetIndoorTripletDataset(Dataset):
     def __init__(self, path, transformer=None, step=40, stdev=5, seed=0, n_scenes=None):
         self.path = path
         self.transformer = transformer
@@ -13,7 +14,7 @@ class ScanNetIndoorDataset(Dataset):
         self.stdev = stdev
         np.random.seed(seed)
         self.image_triplets = []
-        self.scenes = [(a, len(c), ) for a, _, c in os.walk("/home/model/users/ff/scannet_data/scannet_val/images") if len(c) > 0]
+        self.scenes = [(a, len(c), ) for a, _, c in os.walk(self.path) if len(c) > 0]
         if n_scenes:
             self.scenes = self.scenes[:n_scenes]
         for scene in tqdm(self.scenes):
@@ -31,7 +32,12 @@ class ScanNetIndoorDataset(Dataset):
     def __len__(self):
         return len(self.image_triplets)
     
-    def _get_image_triplets(self, scene):    
+    def _get_image_triplets(self, scene):
+        other_scenes = self.scenes.copy()
+        for s in self.scenes:
+            if s[0].split("/")[-2].startswith(scene[0].split("/")[-2][:-2]):
+                other_scenes.remove(s)
+
         img_triplets = []
         for i in range(scene[1]):
             pos_pair = round(np.random.normal(i+self.step, self.stdev))
@@ -40,14 +46,12 @@ class ScanNetIndoorDataset(Dataset):
             triplet = (
                 os.path.join(scene[0], str(i)+".jpg"), 
                 os.path.join(scene[0], str(pos_pair)+".jpg"),
-                self._get_random_neg_pair(scene),
+                self._get_random_neg_pair(other_scenes),
             )
             img_triplets.append(triplet)
         return img_triplets
         
-    def _get_random_neg_pair(self, scene):
-        other_scenes = self.scenes.copy()
-        other_scenes.remove(scene) # remove also folders from the same scene but with another 
+    def _get_random_neg_pair(self, other_scenes):
         other_scene = other_scenes[np.random.randint(0, len(other_scenes))]
         pair_idx = np.random.randint(0, other_scene[1])
         return os.path.join(other_scene[0], str(pair_idx)+".jpg")
