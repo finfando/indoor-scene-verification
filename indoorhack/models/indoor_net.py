@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 from torchvision.models import vgg16
 
-from indoorhack.netvlad import NetVLAD
+from indoorhack.models.netvlad import NetVLAD
 
 class IndoorNet(nn.Module):
     def __init__(self):

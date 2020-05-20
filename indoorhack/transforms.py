@@ -45,12 +45,11 @@ class GetHashFromPath:
                 self.cache[scene][image_number] = image_hash
         return image_hash
 
-    
 class GetRepr:
     """Open path as PIL Image
     """
-    def __init__(self, path: Path):
+    def __init__(self, path):
         self.f = h5py.File(path, "r")
 
-    def __call__(self, path: Path):
-        return self.f[path.parts[-1]][:]
+    def __call__(self, image_identifier):
+        return self.f[image_identifier][:]
