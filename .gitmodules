@@ -5,3 +5,6 @@
 [submodule "submodules/NetVLAD_pytorch"]
 	path = submodules/NetVLAD_pytorch
 	url = https://github.com/lyakaap/NetVLAD-pytorch
+[submodule "submodules/facenet_pytorch"]
+	path = submodules/facenet_pytorch
+	url = https://github.com/timesler/facenet-pytorch.git
