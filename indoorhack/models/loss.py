@@ -12,7 +12,6 @@ class TripletLoss(nn.Module):
     def forward(self, anchor, positive, negative):
         pos_dist   = self.pdist.forward(anchor, positive)
         neg_dist   = self.pdist.forward(anchor, negative)
-        
         hinge_dist = torch.clamp(self.margin + pos_dist - neg_dist, min=0.0)
         loss = torch.mean(hinge_dist)
         return loss

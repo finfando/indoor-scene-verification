@@ -9,3 +9,12 @@ def input_transform():
         Normalize(mean=[0.485, 0.456, 0.406],
                                std=[0.229, 0.224, 0.225]),
     ])
+
+def input_transform_small():
+    return Compose([
+        OpenPILImageFromPath(),
+        Resize((100, 100)),
+        ToTensor(),
+        Normalize(mean=[0.485, 0.456, 0.406],
+                               std=[0.229, 0.224, 0.225]),
+    ])
