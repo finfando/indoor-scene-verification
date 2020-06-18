@@ -47,19 +47,18 @@ class NetVLADModel:
             dataset, 
             batch_size=64, 
             shuffle=False, 
-            num_workers=5, 
+            num_workers=0, 
             pin_memory=True
         )
         try:
             f = h5py.File(save_file_path, "w")
             self.model.eval()
             with torch.no_grad():
-                for i, (tensor, image_identifier) in enumerate(tqdm(dataloader)):
-                    tensor = tensor.to(self.device)
-                    image_encoding = self.model.encoder(tensor)
+                for i, (image, meta) in enumerate(tqdm(dataloader)):
+                    image_encoding = self.model.encoder(image.to(self.device))
                     vlad_encoding = self.model.pool(image_encoding)
                     representation = vlad_encoding.detach().cpu().numpy()
-                    for i in range(len(image_identifier)):
-                        f.create_dataset(image_identifier[i], data=representation[i,:] , dtype='f')
+                    for i in range(len(meta)):
+                        f.create_dataset("/".join([meta[0][i], meta[1][i], meta[2][i]]), data=representation[i,:], dtype='f')
         finally:
             f.close()
