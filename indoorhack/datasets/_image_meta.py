@@ -18,7 +18,7 @@ class ScanDataset(Dataset):
         path2meta = lambda x: (tuple(x[-2].split("_")) + (x[-1].split(".")[0],))
         meta2path = lambda sce, sca, seq: self.path / "_".join([sce, sca]) / (seq + ".jpg")
         if path and not meta:
-            self.images = [i for i in Path(self.path).glob("**/*.jpg")]
+            self.images = [i for i in tqdm(Path(self.path).glob("**/*.jpg"))]
             self.meta = [path2meta(i.parts) for i in self.images]
         elif meta:
             self.meta = meta
@@ -27,7 +27,6 @@ class ScanDataset(Dataset):
     def __getitem__(self, idx):
         path, meta = self.images[idx], self.meta[idx]
         sample = self.loader(path)
-        
         if self.transform is not None:
             sample = self.transform(sample)
         if self.target_transform is not None:
