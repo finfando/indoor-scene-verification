@@ -58,7 +58,7 @@ class NetVLADModel:
                     image_encoding = self.model.encoder(image.to(self.device))
                     vlad_encoding = self.model.pool(image_encoding)
                     representation = vlad_encoding.detach().cpu().numpy()
-                    for i in range(len(meta)):
+                    for i in range(len(meta[0])):
                         f.create_dataset("/".join([meta[0][i], meta[1][i], meta[2][i]]), data=representation[i,:], dtype='f')
         finally:
             f.close()

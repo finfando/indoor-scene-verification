@@ -10,7 +10,7 @@ class ORBModel:
         self.bf = cv.BFMatcher(cv.NORM_HAMMING, crossCheck=True)
 
     def distance(self, im1, im2):
-        if im1.shape[0] == 0 or im2.shape[0] == 0:
+        if im1.shape is None or im2.shape is None or im1.shape[0] == 0 or im2.shape[0] == 0:
             return 1.0
         else:
             matches = self.bf.match(im1.astype(np.uint8), im2.astype(np.uint8))
