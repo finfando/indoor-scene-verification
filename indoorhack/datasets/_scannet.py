@@ -91,13 +91,14 @@ class ScanNetIndoorImageDataset(Dataset):
     def __getitem__(self, idx):
         image = self.images[idx]
         im_path = image
-        if self.transformer:
-            if isinstance(idx, slice):
+        if isinstance(idx, slice):
+            if self.transformer:
                 image = [self.transformer(unit_image) for unit_image in image]
-                image_identifier = [p.split("/")[-3] + "/" + p.split("/")[-1] for p in im_path]
-            else:
+            image_identifier = [p.split("/")[-3] + "/" + p.split("/")[-1] for p in im_path]
+        else:
+            if self.transformer:
                 image = self.transformer(image)
-                image_identifier = im_path.split("/")[-3] + "/" + im_path.split("/")[-1]
+            image_identifier = im_path.split("/")[-3] + "/" + im_path.split("/")[-1]
         return image, image_identifier
     
     def __len__(self):

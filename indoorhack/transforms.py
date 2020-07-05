@@ -1,3 +1,4 @@
+from pathlib import Path
 import pandas as pd
 from PIL import Image
 import cv2
@@ -6,11 +7,21 @@ from skimage import io, transform
 from pathlib import Path
 import h5py
 
-class OpenPILImageFromPath:
-    """Open path as PIL Image
-    """
-    def __call__(self, path: str) -> Image:
-        return Image.open(path)
+
+# class Meta2Path:
+#     """Open path as PIL Image
+#     """
+#     def __init__(self, path):
+#         self.meta2path = lambda x: Path(path) / (x[0] + "_" + x[1]) / (str(x[2]) + ".jpg")
+
+#     def __call__(self, meta):
+#         return self.meta2path(meta)
+
+# class OpenPILImageFromPath:
+#     """Open path as PIL Image
+#     """
+#     def __call__(self, path: str) -> Image:
+#         return Image.open(path)
 
     
 class OpenCV2ImageFromPath:
@@ -20,7 +31,7 @@ class OpenCV2ImageFromPath:
         im = cv2.imread(path, 0)
         im = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
         return im
-
+   
     
 class GetHashFromPath:
     """Open path as PIL Image

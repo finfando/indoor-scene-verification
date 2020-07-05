@@ -16,8 +16,8 @@ class HashModel:
     def get_representations(self, save_file_path, dataset):
         try:
             f = h5py.File(save_file_path, "w")
-            for im, image_identifier in tqdm(dataset):
-                im_hash = self.func(im)
-                f.create_dataset(image_identifier, data=im_hash.hash, dtype='bool')
+            for image, meta in tqdm(dataset, total=len(dataset)):
+                im_hash = self.func(image)
+                f.create_dataset("/".join(meta), data=im_hash.hash, dtype='bool')
         finally:
             f.close()
