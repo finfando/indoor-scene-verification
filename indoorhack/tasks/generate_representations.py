@@ -6,7 +6,7 @@ from indoorhack.tasks.utils import get_dataset, get_model, get_loader, get_trans
 
 @click.command()
 @click.option("--dataset_type", type=click.Choice(["scan", "real_estate"]), required=True)
-@click.option("--model_type", type=click.Choice(["hash", "orb", "netvlad"]), required=True)
+@click.option("--model_type", type=click.Choice(["hash", "orb", "netvlad", "facenet"]), required=True)
 @click.option("--dataset_name", help="Name of dataset.", required=True)
 def generate_representations(dataset_type, model_type, dataset_name):
     dataset_path = (

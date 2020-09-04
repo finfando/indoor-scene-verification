@@ -1,7 +1,7 @@
 from torchvision.transforms import Compose, ToTensor, Normalize, Resize
 
 from indoorhack.datasets import ScanDataset, RealEstateDataset
-from indoorhack.models import HashModel, ORBModel, NetVLADModel
+from indoorhack.models import HashModel, ORBModel, NetVLADModel, FaceNetModel
 from indoorhack.transforms import OpenCV2ImageFromPath
 from confg.env import TORCH_DEVICE, NETVLAD_CHECKPOINT
 
@@ -21,6 +21,8 @@ def get_model(model_type):
         return ORBModel()
     elif model_type == "netvlad":
         return NetVLADModel(device=TORCH_DEVICE, checkpoint=NETVLAD_CHECKPOINT)
+    elif model_type == "facenet":
+        return FaceNetModel(device=TORCH_DEVICE)
     else:
         raise NotImplementedError
 
@@ -34,7 +36,7 @@ def get_loader(model_type):
 
 
 def get_transformer(model_type):
-    if model_type == "netvlad":
+    if model_type == "netvlad" or "facenet":
         return Compose([
             Resize((224, 224)),
             ToTensor(),
