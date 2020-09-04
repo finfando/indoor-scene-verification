@@ -21,20 +21,24 @@ def get_all_triplets(_, labels):
     return triplets
 
 
-def get_semi_hard_triplets(embeddings, labels):
+def get_triplets(embeddings, labels):
     pdist = PairwiseDistance(2)
-    
-    triplets = get_all_triplets(None, labels)
-    triplets = np.array(triplets)
-    pos_dists = pdist(embeddings[triplets[:,0]], embeddings[triplets[:,1]])
-    neg_dists = pdist(embeddings[triplets[:,0]], embeddings[triplets[:,2]])
-    condition = 
-    
+    triplets = []
     pos_dist_out = []
     neg_dist_out = []
+    for l in np.unique(labels):
+        mask = (l == labels)
+        pos_indices = np.where(mask)[0]
+#         pos_pairs = np.array(list(permutations(pos_indices, 2)))
+        pos_pairs = np.array(list(combinations(pos_indices, 2)))
+        pos_dists = pdist(embeddings[pos_pairs[:,0]], embeddings[pos_pairs[:,1]])
 
-    
-    _, idx_sorted = torch.sort(neg_dists)
+        neg_indices = np.where(~mask)[0]
+        
+        for (a, p), d in zip(pos_pairs, pos_dists):
+            neg_pairs = np.array(list(product([a], neg_indices)))
+            neg_dists = pdist(embeddings[neg_pairs[:,0]], embeddings[neg_pairs[:,1]])
+            _, idx_sorted = torch.sort(neg_dists)
             sorted_mask = np.isin(idx_sorted, np.where((neg_dists > d))[0])
             if sum(sorted_mask) == 0:
                 continue
