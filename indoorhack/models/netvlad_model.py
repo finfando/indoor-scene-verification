@@ -8,14 +8,13 @@ import torch.nn as nn
 from torch.utils.data import DataLoader
 from torchvision.models import vgg16
 
-sys.path.append("/home/model/users/ff/pytorch-NetVlad")
-import netvlad
+from submodules.pytorch_NetVLAD.netvlad import NetVLAD
 
 
 class NetVLADModel:
     def __init__(self, device, checkpoint):
         self.device = device
-        checkpoint = torch.load(checkpoint)
+        checkpoint = torch.load(checkpoint, map_location=torch.device(self.device))
         
         pretrained = True
         encoder_dim = 512
@@ -32,7 +31,7 @@ class NetVLADModel:
         self.model.add_module('encoder', encoder)
 
         num_clusters = 64
-        net_vlad = netvlad.NetVLAD(num_clusters=num_clusters, dim=encoder_dim, vladv2=False)
+        net_vlad = NetVLAD(num_clusters=num_clusters, dim=encoder_dim, vladv2=False)
         self.model.add_module('pool', net_vlad)
         
         self.model.load_state_dict(checkpoint['state_dict'])

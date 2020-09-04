@@ -1,14 +1,13 @@
 from pathlib import Path
 import click
 import pandas as pd
-from torchvision.transforms import Compose
-from indoorhack.tasks.utils import get_dataset, get_model, get_loader
+from indoorhack.tasks.utils import get_dataset, get_model, get_loader, get_transformer
 
 
 @click.command()
-@click.option("--dataset_type", type=click.Choice(["scan", "real_estate"]))
-@click.option("--model_type", type=click.Choice(["hash", "orb", "netvlad"]))
-@click.option("--dataset_name", help="Name of dataset.")
+@click.option("--dataset_type", type=click.Choice(["scan", "real_estate"]), required=True)
+@click.option("--model_type", type=click.Choice(["hash", "orb", "netvlad"]), required=True)
+@click.option("--dataset_name", help="Name of dataset.", required=True)
 def generate_representations(dataset_type, model_type, dataset_name):
     dataset_path = (
         Path(__file__).resolve().parents[2] / "data" / dataset_type / dataset_name
@@ -20,7 +19,7 @@ def generate_representations(dataset_type, model_type, dataset_name):
         / f"{dataset_name}_meta.pkl"
     )
     loader = get_loader(model_type)
-    transform = Compose([])
+    transform = get_transformer(model_type)
     meta = pd.read_pickle(meta_path)
     dataset = get_dataset(
         dataset_type, path=dataset_path, meta=meta, loader=loader, transform=transform
