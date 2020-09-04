@@ -1,4 +1,2 @@
-from indoorhack.datasets._scannet import ScanNetIndoorTripletDataset, ScanNetIndoorImageDataset
-from indoorhack.datasets._scannet_v2 import ScanNetIndoorImagePairDataset
-from indoorhack.datasets._real_estate import RealEstateListingTripletDataset, RealEstateListingImageDataset
-from indoorhack.datasets._image_meta import ScanDataset
+from indoorhack.datasets.scan_dataset import ScanDataset
+from indoorhack.datasets.real_estate_dataset import RealEstateDataset
