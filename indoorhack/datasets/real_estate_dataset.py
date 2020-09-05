@@ -32,7 +32,7 @@ class RealEstateDataset(Dataset):
         if use_label_encoding:
             apartment_id, scene_id, _ = zip(*self.meta)
             self.le = LabelEncoder()
-            self.le.fit("_".join(apartment_id, scene_id))
+            self.le.fit(["_".join([a, s]) for a, s in list(zip(apartment_id, scene_id))])
 
     def __getitem__(self, idx):
         path, meta = self.images[idx], self.meta[idx]
@@ -41,7 +41,9 @@ class RealEstateDataset(Dataset):
             sample = self.transform(sample)
 
         if self.le:
-            return sample, self.le.transform([meta[0]])
+            return sample, self.le.transform([
+                "_".join([meta[0], meta[1]])
+            ])
         else:
             return sample, meta
 
