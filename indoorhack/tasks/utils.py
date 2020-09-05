@@ -36,7 +36,7 @@ def get_loader(model_type):
 
 
 def get_transformer(model_type):
-    if model_type == "netvlad" or "facenet":
+    if model_type in ["netvlad", "facenet"]:
         return Compose([
             Resize((224, 224)),
             ToTensor(),
