@@ -1,0 +1,3 @@
+outs:
+- md5: 7e31eef60920660d5e09f5b119763a5c
+  path: sonar_X.npy

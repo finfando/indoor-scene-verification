@@ -1,3 +1,4 @@
+import h5py
 from torchvision.transforms import Compose, ToTensor, Normalize, Resize
 
 from indoorhack.datasets import ScanDataset, RealEstateDataset
@@ -27,16 +28,18 @@ def get_model(model_type):
         raise NotImplementedError
 
 
-def get_loader(model_type):
+def get_loader(model_type=None, repr_path=None):
     if model_type == "orb":
         open_cv2 = OpenCV2ImageFromPath()
         return lambda x: open_cv2(str(x))
+    elif repr_path:
+        return lambda x: h5py.File(repr_path, "r")["/".join(x.parts[-3:])][:]
     else:
         return None
 
 
 def get_transformer(model_type):
-    if model_type == "netvlad" or "facenet":
+    if model_type in ["netvlad", "facenet"]:
         return Compose([
             Resize((224, 224)),
             ToTensor(),
