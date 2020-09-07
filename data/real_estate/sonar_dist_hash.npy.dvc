@@ -1,0 +1,3 @@
+outs:
+- md5: 13e47d8ec8ff78ecc07e64032ed5897c
+  path: sonar_dist_hash.npy

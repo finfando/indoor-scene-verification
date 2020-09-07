@@ -1,0 +1,8 @@
+/sonar
+/sonar_X.npy
+/sonar_dist_hash.npy
+/sonar_repr_facenet.hdf5
+/sonar_repr_hash.hdf5
+/sonar_repr_netvlad.hdf5
+/sonar_repr_orb.hdf5
+/sonar_y.npy
