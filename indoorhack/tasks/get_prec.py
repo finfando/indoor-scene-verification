@@ -2,7 +2,7 @@ from pathlib import Path
 
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.metrics import roc_curve
+from sklearn.metrics import precision_recall_curve
 
 dataset_type = "real_estate"
 dataset_name = "sonar"
@@ -22,12 +22,11 @@ fig = plt.figure(figsize=(10,10))
 fig.patch.set_facecolor('white')
 for name, d in distances.items():
     score = 1 - d
-    fpr, tpr, thresholds = roc_curve(y, score)
-    plt.plot(fpr, tpr, label=name, linewidth=2)
+    prec, rec, thresholds = precision_recall_curve(y, score)
+    plt.plot(prec, rec, label=name)
 
-plt.plot([0, 1], [0, 1], c="blue", linewidth=0.5, linestyle="--")
 plt.grid()
-plt.xlabel("Fall-out", size=25)
+plt.xlabel("Precision", size=25)
 plt.ylabel("Recall", size=25)
 plt.ylim((-0.05,1.05))
 plt.xlim((-0.05,1.05))
@@ -35,5 +34,5 @@ plt.xticks(fontsize=20)
 plt.yticks(fontsize=20)
 plt.legend(prop={'size': 30})
 plt.title("Real estate dataset")
-plt.savefig(plots_path / "roc.pdf")
+plt.savefig(plots_path / "prec.pdf")
 plt.show()
