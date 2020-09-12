@@ -18,7 +18,7 @@ for m in model_type:
     X_dist_path = main_path / f"{dataset_name}_dist_{m}.npy"
     distances[m] = np.load(X_dist_path)
 
-fig = plt.figure(figsize=(10,10))
+fig = plt.figure(figsize=(20,10))
 fig.patch.set_facecolor('white')
 for i, (name, d) in enumerate(distances.items()):
     score = 1 - d
@@ -26,7 +26,7 @@ for i, (name, d) in enumerate(distances.items()):
     plt.hist(score[y==1], bins=10, alpha=0.7, label="pos", color="lightgreen")
     plt.hist(score[y==0], bins=10, alpha=0.7, label="neg", color="pink")
     plt.grid()
-    plt.ylim((0,800))
+    plt.ylim((0,700))
     plt.xlim((-0.05,1.05))
     plt.xticks([i/100 for i in range(0, 101, 10)])
     plt.title(name, size=30)
