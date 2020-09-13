@@ -1,12 +1,14 @@
 from pathlib import Path
 
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 from sklearn.metrics import roc_curve
+
+from indoorhack.utils import scale_fix
 
 dataset_type = "real_estate"
 dataset_name = "sonar"
-model_type = ["hash", "orb", "facenet"]
+model_type = ["hash", "orb", "netvlad", "facenet"]
 main_path = Path(__file__).resolve().parents[2] / "data" / dataset_type
 plots_path = Path(__file__).resolve().parents[2] / "plots" / dataset_type
 
@@ -21,7 +23,9 @@ for m in model_type:
 fig = plt.figure(figsize=(10,10))
 fig.patch.set_facecolor('white')
 for name, d in distances.items():
-    score = 1 - d
+    distances_array = np.array(d)
+    distances_array_scaled = scale_fix(distances_array, 0, 1)
+    score = 1 - distances_array_scaled
     fpr, tpr, thresholds = roc_curve(y, score)
     plt.plot(fpr, tpr, label=name, linewidth=2)
 
