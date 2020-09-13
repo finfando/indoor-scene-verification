@@ -6,3 +6,6 @@
 /sonar_repr_netvlad.hdf5
 /sonar_repr_orb.hdf5
 /sonar_y.npy
+/sonar_dist_facenet.npy
+/sonar_dist_netvlad.npy
+/sonar_dist_orb.npy
