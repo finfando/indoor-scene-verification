@@ -1,0 +1,3 @@
+outs:
+- md5: 17e46fbcbeb6ff35a16a97a717715ac1
+  path: sonar_dist_facenet.npy
