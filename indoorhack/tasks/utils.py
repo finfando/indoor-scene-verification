@@ -4,7 +4,7 @@ from torchvision.transforms import Compose, ToTensor, Normalize, Resize
 from indoorhack.datasets import ScanDataset, RealEstateDataset
 from indoorhack.models import HashModel, ORBModel, NetVLADModel, FaceNetModel
 from indoorhack.transforms import OpenCV2ImageFromPath
-from confg.env import TORCH_DEVICE, NETVLAD_CHECKPOINT
+from config.env import TORCH_DEVICE, NETVLAD_CHECKPOINT
 
 def get_dataset(dataset_type, **kwargs):
     if dataset_type == "scan":
