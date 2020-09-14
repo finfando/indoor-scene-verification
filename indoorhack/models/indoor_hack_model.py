@@ -10,7 +10,7 @@ from submodules.NetVLAD_pytorch.netvlad import NetVLAD, EmbedNet, TripletNet
 class IndoorHackModel:
     def __init__(self, device, checkpoint):
         self.device = device
-        checkpoint = torch.load(checkpoint)
+        checkpoint = torch.load(checkpoint, map_location=torch.device(self.device))
         
         base_model = vgg16(pretrained=False).features
         dim = list(base_model.parameters())[-1].shape[0]

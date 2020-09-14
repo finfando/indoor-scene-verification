@@ -1,13 +1,10 @@
 import h5py
-import torch
-from torchvision.models import vgg16
 from torchvision.transforms import Compose, ToTensor, Normalize, Resize
 
 from config.env import TORCH_DEVICE, NETVLAD_CHECKPOINT, INDOORHACK_V6_CHECKPOINT
 from indoorhack.datasets import RealEstateDataset
-from indoorhack.models import HashModel, ORBModel, NetVLADModel, FaceNetModel
+from indoorhack.models import HashModel, ORBModel, NetVLADModel, FaceNetModel, IndoorHackModel
 from indoorhack.transforms import OpenCV2ImageFromPath
-from submodules.NetVLAD_pytorch.netvlad import NetVLAD, EmbedNet
 
 
 def get_dataset(dataset_type, **kwargs):
@@ -25,16 +22,13 @@ def get_model(model_type):
     elif model_type == "orb":
         return ORBModel()
     elif model_type == "netvlad":
+        assert NETVLAD_CHECKPOINT is not None
         return NetVLADModel(device=TORCH_DEVICE, checkpoint=NETVLAD_CHECKPOINT)
     elif model_type == "facenet":
         return FaceNetModel(device=TORCH_DEVICE)
     elif model_type == "indoorhack-v6":
-        base_model = vgg16(pretrained=False).features
-        dim = list(base_model.parameters())[-1].shape[0]
-        net_vlad = NetVLAD(num_clusters=32, dim=dim, alpha=1.0)
-        model = EmbedNet(base_model, net_vlad).to(TORCH_DEVICE)
-        model.load_state_dict(torch.load(INDOORHACK_V6_CHECKPOINT, map_location=TORCH_DEVICE))
-        return model
+        assert INDOORHACK_V6_CHECKPOINT is not None
+        return IndoorHackModel(device=TORCH_DEVICE, checkpoint=INDOORHACK_V6_CHECKPOINT)
     else:
         raise NotImplementedError
 
@@ -50,7 +44,7 @@ def get_loader(model_type=None, repr_path=None):
 
 
 def get_transformer(model_type):
-    if model_type in ["netvlad", "facenet"]:
+    if model_type in ["netvlad", "facenet", "indoorhack-v6"]:
         return Compose([
             Resize((224, 224)),
             ToTensor(),
