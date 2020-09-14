@@ -1,10 +1,14 @@
 import h5py
+import torch
+from torchvision.models import vgg16
 from torchvision.transforms import Compose, ToTensor, Normalize, Resize
 
-from indoorhack.datasets import ScanDataset, RealEstateDataset
+from config.env import TORCH_DEVICE, NETVLAD_CHECKPOINT, INDOORHACK_V6_CHECKPOINT
+from indoorhack.datasets import RealEstateDataset
 from indoorhack.models import HashModel, ORBModel, NetVLADModel, FaceNetModel
 from indoorhack.transforms import OpenCV2ImageFromPath
-from config.env import TORCH_DEVICE, NETVLAD_CHECKPOINT
+from submodules.NetVLAD_pytorch.netvlad import NetVLAD, EmbedNet
+
 
 def get_dataset(dataset_type, **kwargs):
     if dataset_type == "scan":
@@ -24,6 +28,13 @@ def get_model(model_type):
         return NetVLADModel(device=TORCH_DEVICE, checkpoint=NETVLAD_CHECKPOINT)
     elif model_type == "facenet":
         return FaceNetModel(device=TORCH_DEVICE)
+    elif model_type == "indoorhack-v6":
+        base_model = vgg16(pretrained=False).features
+        dim = list(base_model.parameters())[-1].shape[0]
+        net_vlad = NetVLAD(num_clusters=32, dim=dim, alpha=1.0)
+        model = EmbedNet(base_model, net_vlad).to(TORCH_DEVICE)
+        model.load_state_dict(torch.load(INDOORHACK_V6_CHECKPOINT, map_location=TORCH_DEVICE))
+        return model
     else:
         raise NotImplementedError
 
