@@ -26,20 +26,20 @@ class IndoorHackModel:
     def get_representations(self, save_file_path, dataset):
         dataloader = DataLoader(
             dataset, 
-            batch_size=64, 
+            batch_size=8,
             shuffle=False, 
-            num_workers=5, 
-            pin_memory=True
+            num_workers=4,
+            pin_memory=False
         )
         try:
             f = h5py.File(save_file_path, "w")
             self.model.eval()
             with torch.no_grad():
-                for i, (tensor, image_identifier) in enumerate(tqdm(dataloader)):
+                for i, (tensor, meta) in enumerate(tqdm(dataloader)):
                     tensor = tensor.to(self.device)
                     out = self.model(tensor)
                     representation = out.detach().cpu().numpy()
-                    for i in range(len(image_identifier)):
-                        f.create_dataset(image_identifier[i], data=representation[i,:] , dtype='f')
+                    for i in range(len(meta[0])):
+                        f.create_dataset("/".join([meta[0][i], meta[1][i], meta[2][i]]), data=representation[i,:] , dtype='f')
         finally:
             f.close()

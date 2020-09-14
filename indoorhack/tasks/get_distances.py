@@ -14,7 +14,7 @@ from indoorhack.tasks.utils import get_dataset, get_model, get_loader
 )
 @click.option(
     "--model_type",
-    type=click.Choice(["hash", "orb", "netvlad", "facenet"]),
+    type=click.Choice(["hash", "orb", "netvlad", "facenet", "indoorhack-v6"]),
     required=True,
 )
 @click.option("--dataset_name", help="Name of dataset.", required=True)
