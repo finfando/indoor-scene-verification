@@ -15,3 +15,4 @@ click==7.1.2
 scikit-image==0.17.2
 networkx==2.4
 dvc[gs]
+h5py==2.10.0

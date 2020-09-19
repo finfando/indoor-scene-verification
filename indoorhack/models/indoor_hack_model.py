@@ -8,15 +8,16 @@ from torchvision.models import vgg16
 from submodules.NetVLAD_pytorch.netvlad import NetVLAD, EmbedNet, TripletNet
 
 class IndoorHackModel:
-    def __init__(self, device, checkpoint):
+    def __init__(self, device, checkpoint=None):
         self.device = device
-        checkpoint = torch.load(checkpoint, map_location=torch.device(self.device))
-        
         base_model = vgg16(pretrained=False).features
         dim = list(base_model.parameters())[-1].shape[0]
         net_vlad = NetVLAD(num_clusters=32, dim=dim, alpha=1.0)
         self.model = EmbedNet(base_model, net_vlad).to(device)
-        self.model.load_state_dict(checkpoint)
+
+        if checkpoint:
+            checkpoint = torch.load(checkpoint, map_location=torch.device(self.device))
+            self.model.load_state_dict(checkpoint)
         self.model.to(device)
 
     @staticmethod

@@ -2,21 +2,21 @@ import h5py
 from torchvision.transforms import Compose, ToTensor, Normalize, Resize
 
 from config.env import TORCH_DEVICE, NETVLAD_CHECKPOINT, INDOORHACK_V6_CHECKPOINT
-from indoorhack.datasets import RealEstateDataset
+from indoorhack.datasets import RealEstateDataset, ScanDataset
 from indoorhack.models import HashModel, ORBModel, NetVLADModel, FaceNetModel, IndoorHackModel
 from indoorhack.transforms import OpenCV2ImageFromPath
 
 
 def get_dataset(dataset_type, **kwargs):
     if dataset_type == "scan":
-        raise NotImplementedError
+        return ScanDataset(**kwargs)
     elif dataset_type == "real_estate":
         return RealEstateDataset(**kwargs)
     else:
         raise NotImplementedError
 
 
-def get_model(model_type):
+def get_model(model_type, checkpoint=True):
     if model_type == "hash":
         return HashModel()
     elif model_type == "orb":
@@ -26,9 +26,12 @@ def get_model(model_type):
         return NetVLADModel(device=TORCH_DEVICE, checkpoint=NETVLAD_CHECKPOINT)
     elif model_type == "facenet":
         return FaceNetModel(device=TORCH_DEVICE)
-    elif model_type == "indoorhack-v6":
-        assert INDOORHACK_V6_CHECKPOINT is not None
-        return IndoorHackModel(device=TORCH_DEVICE, checkpoint=INDOORHACK_V6_CHECKPOINT)
+    elif model_type == "indoorhack":
+        if checkpoint:
+            assert INDOORHACK_V6_CHECKPOINT is not None
+            return IndoorHackModel(device=TORCH_DEVICE, checkpoint=INDOORHACK_V6_CHECKPOINT)
+        else:
+            return IndoorHackModel(device=TORCH_DEVICE)
     else:
         raise NotImplementedError
 
