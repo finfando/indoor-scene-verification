@@ -1,3 +1,4 @@
+from pathlib import Path
 import h5py
 from torchvision.transforms import Compose, ToTensor, Normalize, Resize
 
@@ -35,6 +36,14 @@ def get_model(model_type, checkpoint=True):
     else:
         raise NotImplementedError
 
+def get_experiment(experiment_name):
+    if experiment_name in ["hash", "orb", "netvlad", "facenet"]:
+        return get_model(model_type)
+    elif experiment_name == "indoorhack-v1":
+        checkpoint_path = Path(__file__).resolve().parents[2] / "checkpoints" / "indoorhack_v1_4.torch"
+        return IndoorHackModel(device=TORCH_DEVICE, checkpoint=checkpoint_path)
+    else:
+        raise NotImplementedError
 
 def get_loader(model_type=None, repr_path=None):
     if model_type == "orb":
@@ -47,7 +56,7 @@ def get_loader(model_type=None, repr_path=None):
 
 
 def get_transformer(model_type):
-    if model_type in ["netvlad", "facenet", "indoorhack-v6"]:
+    if model_type in ["netvlad", "facenet", "indoorhack-v1"]:
         return Compose([
             Resize((224, 224)),
             ToTensor(),

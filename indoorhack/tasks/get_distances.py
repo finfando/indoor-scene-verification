@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 from tqdm.auto import tqdm
 
-from indoorhack.tasks.utils import get_dataset, get_model, get_loader
+from indoorhack.tasks.utils import get_dataset, get_model, get_loader, get_experiment
 
 
 @click.command()
@@ -14,7 +14,7 @@ from indoorhack.tasks.utils import get_dataset, get_model, get_loader
 )
 @click.option(
     "--model_type",
-    type=click.Choice(["hash", "orb", "netvlad", "facenet", "indoorhack-v6"]),
+    type=click.Choice(["hash", "orb", "netvlad", "facenet", "indoorhack-v1"]),
     required=True,
 )
 @click.option("--dataset_name", help="Name of dataset.", required=True)
@@ -53,7 +53,7 @@ def process_pairs(indices, dataset, model_type, X):
         im1_idx, im2_idx = X[i]
         im1 = dataset[im1_idx][0]
         im2 = dataset[im2_idx][0]
-        distances.append(get_model(model_type).distance(im1, im2))
+        distances.append(get_experiment(model_type).distance(im1, im2))
     return distances
 
 
