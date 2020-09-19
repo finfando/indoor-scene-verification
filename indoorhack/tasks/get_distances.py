@@ -1,3 +1,4 @@
+from multiprocessing import Pool
 from pathlib import Path
 
 import click
@@ -5,8 +6,11 @@ import numpy as np
 import pandas as pd
 from tqdm.auto import tqdm
 
-from indoorhack.tasks.utils import get_dataset, get_model, get_loader, get_experiment
+from indoorhack.tasks.utils import (get_dataset, get_experiment, get_loader,
+                                    get_model)
 
+NTHREADS = 8
+dataset, model_type_global, X = None, None, None
 
 @click.command()
 @click.option(
@@ -19,7 +23,8 @@ from indoorhack.tasks.utils import get_dataset, get_model, get_loader, get_exper
 )
 @click.option("--dataset_name", help="Name of dataset.", required=True)
 def get_distances(dataset_type, model_type, dataset_name):
-
+    global dataset, model_type_global, X
+    model_type_global = model_type
     main_path = Path(__file__).resolve().parents[2] / "data" / dataset_type
     X = np.load(main_path / f"{dataset_name}_X.npy")
     y = np.load(main_path / f"{dataset_name}_y.npy")
@@ -39,12 +44,22 @@ def get_distances(dataset_type, model_type, dataset_name):
         transform=transform,
         use_label_encoding=True,
     )
+    
+    ids = np.arange(len(X))
+    if NTHREADS == 1:
+        distances_flat = process_pairs(ids, )
+    elif NTHREADS > 1:
+        splits = np.array_split(ids, 6)
+        with Pool(6) as pool:
+            results = pool.map(process_pairs, splits)
+        distances_flat = [number for n in results for number in n]
+        # distances_arr = np.array(distances_flat)
+        # distances_arr_scaled = scale_fix(distances_arr, 0, 1)
+    np.save(main_path / f"{dataset_name}_dist_{model_type}.npy", np.array(distances_flat))
 
-    distances = process_pairs(np.arange(len(X)), dataset, model_type, X)
-    np.save(main_path / f"{dataset_name}_dist_{model_type}.npy", np.array(distances))
 
-
-def process_pairs(indices, dataset, model_type, X):
+def process_pairs(indices):
+    global dataset, model_type_global, X
     print(
         " ", end="", flush=True
     )  # hack for printing tqdm progress bar when using multiprocessing
@@ -53,7 +68,7 @@ def process_pairs(indices, dataset, model_type, X):
         im1_idx, im2_idx = X[i]
         im1 = dataset[im1_idx][0]
         im2 = dataset[im2_idx][0]
-        distances.append(get_experiment(model_type).distance(im1, im2))
+        distances.append(get_experiment(model_type_global).distance(im1, im2))
     return distances
 
 
