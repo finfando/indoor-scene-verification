@@ -48,12 +48,14 @@ def get_experiment(experiment_name):
     else:
         raise NotImplementedError
 
-def get_loader(model_type=None, repr_path=None):
+def get_loader(model_type=None, repr_path=None, dataset_type="real_estate"):
     if model_type == "orb":
         open_cv2 = OpenCV2ImageFromPath()
         return lambda x: open_cv2(str(x))
-    elif repr_path:
+    elif repr_path and dataset_type == "real_estate":
         return lambda x: h5py.File(repr_path, "r")["/".join(x.parts[-3:])][:]
+    elif repr_path and dataset_type == "scan":
+        return lambda x: h5py.File(repr_path, "r")["/".join((tuple(x.parts[-2].split("_")) + (x.parts[-1].split(".")[0],)))][:]
     else:
         return None
 

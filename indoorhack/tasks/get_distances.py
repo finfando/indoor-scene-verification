@@ -22,18 +22,23 @@ dataset, model_type_global, X = None, None, None
     required=True,
 )
 @click.option("--dataset_name", help="Name of dataset.", required=True)
-def get_distances(dataset_type, model_type, dataset_name):
+@click.option("--dataset_variant", help="Variant of a dataset.", required=False)
+def get_distances(dataset_type, model_type, dataset_name, dataset_variant):
     global dataset, model_type_global, X
     model_type_global = model_type
     main_path = Path(__file__).resolve().parents[2] / "data" / dataset_type
-    X = np.load(main_path / f"{dataset_name}_X.npy")
-    y = np.load(main_path / f"{dataset_name}_y.npy")
+    if dataset_variant:
+        X = np.load(main_path / f"{dataset_name}_{dataset_variant}_X.npy")
+        y = np.load(main_path / f"{dataset_name}_{dataset_variant}_y.npy")
+    else:
+        X = np.load(main_path / f"{dataset_name}_X.npy")
+        y = np.load(main_path / f"{dataset_name}_y.npy")
 
     dataset_path = main_path / dataset_name
     meta_path = main_path / f"{dataset_name}_meta.pkl"
     repr_path = main_path / f"{dataset_name}_repr_{model_type}.hdf5"
 
-    loader = get_loader(repr_path=repr_path)
+    loader = get_loader(repr_path=repr_path, dataset_type=dataset_type)
     transform = None
     meta = pd.read_pickle(meta_path)
     dataset = get_dataset(
