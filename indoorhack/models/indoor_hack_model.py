@@ -10,7 +10,7 @@ from submodules.NetVLAD_pytorch.netvlad import NetVLAD, EmbedNet, TripletNet
 class IndoorHackModel:
     def __init__(self, device, checkpoint=None):
         self.device = device
-        base_model = vgg16(pretrained=False).features
+        base_model = vgg16(pretrained=True).features
         dim = list(base_model.parameters())[-1].shape[0]
         net_vlad = NetVLAD(num_clusters=32, dim=dim, alpha=1.0)
         self.model = EmbedNet(base_model, net_vlad).to(device)

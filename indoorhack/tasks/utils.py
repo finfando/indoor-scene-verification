@@ -38,9 +38,12 @@ def get_model(model_type, checkpoint=True):
 
 def get_experiment(experiment_name):
     if experiment_name in ["hash", "orb", "netvlad", "facenet"]:
-        return get_model(model_type)
+        return get_model(experiment_name)
     elif experiment_name == "indoorhack-v1":
         checkpoint_path = Path(__file__).resolve().parents[2] / "checkpoints" / "indoorhack_v1_4.torch"
+        return IndoorHackModel(device=TORCH_DEVICE, checkpoint=checkpoint_path)
+    elif experiment_name == "indoorhack-v2":
+        checkpoint_path = Path(__file__).resolve().parents[2] / "checkpoints" / "indoorhack_v2" / "2020-09-21_173122" / "indoorhack_v2_18.torch"
         return IndoorHackModel(device=TORCH_DEVICE, checkpoint=checkpoint_path)
     else:
         raise NotImplementedError
@@ -56,7 +59,7 @@ def get_loader(model_type=None, repr_path=None):
 
 
 def get_transformer(model_type):
-    if model_type in ["netvlad", "facenet", "indoorhack-v1"]:
+    if model_type in ["netvlad", "facenet", "indoorhack-v1"] or model_type.startswith("indoorhack"):
         return Compose([
             Resize((224, 224)),
             ToTensor(),

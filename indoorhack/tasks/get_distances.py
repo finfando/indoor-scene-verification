@@ -18,7 +18,7 @@ dataset, model_type_global, X = None, None, None
 )
 @click.option(
     "--model_type",
-    type=click.Choice(["hash", "orb", "netvlad", "facenet", "indoorhack-v1"]),
+    type=click.Choice(["hash", "orb", "netvlad", "facenet", "indoorhack-v1", "indoorhack-v2"]),
     required=True,
 )
 @click.option("--dataset_name", help="Name of dataset.", required=True)
@@ -49,8 +49,8 @@ def get_distances(dataset_type, model_type, dataset_name):
     if NTHREADS == 1:
         distances_flat = process_pairs(ids, )
     elif NTHREADS > 1:
-        splits = np.array_split(ids, 6)
-        with Pool(6) as pool:
+        splits = np.array_split(ids, NTHREADS)
+        with Pool(NTHREADS) as pool:
             results = pool.map(process_pairs, splits)
         distances_flat = [number for n in results for number in n]
         # distances_arr = np.array(distances_flat)

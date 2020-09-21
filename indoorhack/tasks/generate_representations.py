@@ -2,16 +2,19 @@ from pathlib import Path
 import click
 import pandas as pd
 from indoorhack.tasks.utils import get_dataset, get_model, get_loader, get_transformer, get_experiment
-
+from config.env import SCAN_DATA_PATH
 
 @click.command()
 @click.option("--dataset_type", type=click.Choice(["scan", "real_estate"]), required=True)
-@click.option("--model_type", type=click.Choice(["hash", "orb", "netvlad", "facenet", "indoorhack-v1"]), required=True)
+@click.option("--model_type", type=click.Choice(["hash", "orb", "netvlad", "facenet", "indoorhack-v1", "indoorhack-v2"]), required=True)
 @click.option("--dataset_name", help="Name of dataset.", required=True)
 def generate_representations(dataset_type, model_type, dataset_name):
-    dataset_path = (
-        Path(__file__).resolve().parents[2] / "data" / dataset_type / dataset_name
-    )
+    if dataset_type == "scan":
+        dataset_path = SCAN_DATA_PATH / dataset_name
+    else:
+        dataset_path = (
+            Path(__file__).resolve().parents[2] / "data" / dataset_type / dataset_name
+        )
     meta_path = (
         Path(__file__).resolve().parents[2]
         / "data"

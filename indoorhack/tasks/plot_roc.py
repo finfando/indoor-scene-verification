@@ -8,7 +8,7 @@ from indoorhack.utils import scale_fix
 
 dataset_type = "real_estate"
 dataset_name = "sonar"
-model_type = ["hash", "orb", "netvlad", "facenet"]
+model_type = ["hash", "orb", "netvlad", "facenet", "indoorhack-v1", "indoorhack-v2"]
 main_path = Path(__file__).resolve().parents[2] / "data" / dataset_type
 plots_path = Path(__file__).resolve().parents[2] / "plots" / dataset_type
 

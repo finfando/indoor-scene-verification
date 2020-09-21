@@ -1,3 +1,4 @@
+import datetime
 from pathlib import Path
 
 import h5py
@@ -8,6 +9,7 @@ import torch.optim as optim
 from sklearn.metrics import roc_auc_score
 from torch.nn.modules.distance import PairwiseDistance
 from torch.utils.data import DataLoader
+from torch.utils.tensorboard import SummaryWriter
 from torchvision.models import vgg16
 from tqdm.auto import tqdm
 
@@ -26,6 +28,12 @@ def train(experiment_name, model_type, checkpoint, epochs):
     dataset_type = "scan"
     loader = None
     transform = pipeline()
+
+    now = datetime.datetime.utcnow().strftime("%Y-%m-%d_%H%M%S")
+    writer_path = Path(__file__).resolve().parents[2] / "runs" / experiment_name / now
+    save_path = Path(__file__).resolve().parents[2] / "checkpoints" / experiment_name / now
+    save_path.mkdir(parents=True, exist_ok=True)
+    writer = SummaryWriter(log_dir=writer_path)
 
     # train dataset
     dataloader_train = prepare_train_dataloader(loader, transform)
@@ -53,7 +61,14 @@ def train(experiment_name, model_type, checkpoint, epochs):
         for i, (image, label) in enumerate(
             tqdm(dataloader_train, desc=str(epoch + 1) + " training"), 0
         ):
-            embeddings = model(image.cuda())
+            image = image.cuda()
+            # writer.add_graph(model, image)
+            embeddings = model(image)
+            # writer.add_embedding(
+            #     embeddings,
+            #     metadata=class_labels,
+            #     label_img=images.unsqueeze(1)
+            # )
             try:
                 loss = criterion(embeddings, label)
             except RuntimeError as e:
@@ -69,9 +84,9 @@ def train(experiment_name, model_type, checkpoint, epochs):
                     "(train)[%d, %5d] loss: %.3f"
                     % (epoch + 1, i + 1, running_loss / interval)
                 )
+                writer.add_scalar("Loss/train", running_loss / interval, epoch * len(dataloader_train) + (i + 1))
                 running_loss = 0.0
 
-        save_path = Path(__file__).resolve().parents[2] / "checkpoints"
         torch.save(
             model.state_dict(), 
             save_path / (experiment_name + "_" + str(epoch + 1) + ".torch")
@@ -93,6 +108,7 @@ def train(experiment_name, model_type, checkpoint, epochs):
             distances_sc = scale_fix(np.array(distances), 0, 1)
             auc_score = roc_auc_score(np.array(labels), 1 - distances_sc)
             print("(val)[%d] auc: %.3f" % (epoch + 1, auc_score))
+            writer.add_scalar("AUC/val", auc_score, epoch + 1)
 
 
 def get_meta(dataset_type, dataset_name):
@@ -152,8 +168,15 @@ def prepare_train_dataloader(loader, transform):
 
 
 if __name__ == "__main__":
-    epochs = 1
-    experiment_name = "indoorhack_v1"
+    # epochs = 100
+    # experiment_name = "indoorhack_v1"
+    # model_type = "indoorhack"
+    # checkpoint = False
+    # train(experiment_name, model_type, checkpoint, epochs)
+
+
+    epochs = 100
+    experiment_name = "indoorhack_v2"
     model_type = "indoorhack"
     checkpoint = False
     train(experiment_name, model_type, checkpoint, epochs)
