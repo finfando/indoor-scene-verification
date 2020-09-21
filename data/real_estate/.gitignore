@@ -9,3 +9,5 @@
 /sonar_dist_facenet.npy
 /sonar_dist_netvlad.npy
 /sonar_dist_orb.npy
+/sonar_repr_indoorhack-v2.hdf5
+/sonar_dist_indoorhack-v2.npy
