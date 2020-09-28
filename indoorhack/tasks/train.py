@@ -1,6 +1,7 @@
 import datetime
 from pathlib import Path
 
+import click
 import h5py
 import numpy as np
 import pandas as pd
@@ -24,7 +25,13 @@ from indoorhack.utils import generate_pos_neg_plot, scale_fix
 from submodules.NetVLAD_pytorch.netvlad import EmbedNet, NetVLAD
 
 
-def train(experiment_name, model_type, checkpoint, epochs):
+@click.command()
+@click.option("--experiment_name", required=True)
+@click.option("--model_type", default="indoorhack")
+@click.option("--checkpoint", default=False)
+@click.option("--epochs", default=100)
+@click.option("--stdev", required=True, type=click.INT)
+def train(experiment_name, model_type, checkpoint, epochs, stdev):
     dataset_type = "scan"
     loader = None
     transform = pipeline()
@@ -36,7 +43,7 @@ def train(experiment_name, model_type, checkpoint, epochs):
     writer = SummaryWriter(log_dir=writer_path)
 
     # train dataset
-    dataloader_train = prepare_train_dataloader(loader, transform)
+    dataloader_train = prepare_train_dataloader(loader, transform, stdev)
 
     # val dataset
     dataset_val = get_dataset(
@@ -143,7 +150,7 @@ def prepare_val_dataset():
     return validation_set
 
 
-def prepare_train_dataloader(loader, transform):
+def prepare_train_dataloader(loader, transform, stdev):
     dataset_train = get_dataset(
         "scan",
         path=SCAN_DATA_PATH / "scannet_train",
@@ -156,7 +163,7 @@ def prepare_train_dataloader(loader, transform):
         dataset_train,
         n_batches=100,
         n_pos=5,
-        stdev=20,
+        stdev=stdev,
         n_scenes_in_batch=15,
         scene_indices_dict=None,
         scene_scan_indices_dict=None,
@@ -168,15 +175,4 @@ def prepare_train_dataloader(loader, transform):
 
 
 if __name__ == "__main__":
-    # epochs = 100
-    # experiment_name = "indoorhack_v1"
-    # model_type = "indoorhack"
-    # checkpoint = False
-    # train(experiment_name, model_type, checkpoint, epochs)
-
-
-    epochs = 100
-    experiment_name = "indoorhack_v2"
-    model_type = "indoorhack"
-    checkpoint = False
-    train(experiment_name, model_type, checkpoint, epochs)
+    train()

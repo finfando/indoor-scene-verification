@@ -8,9 +8,10 @@ from tqdm.auto import tqdm
 
 from indoorhack.tasks.utils import (get_dataset, get_experiment, get_loader,
                                     get_model)
+from config.env import NTHREADS
 
-NTHREADS = 8
 dataset, model_type_global, X = None, None, None
+
 
 @click.command()
 @click.option(
@@ -60,7 +61,11 @@ def get_distances(dataset_type, model_type, dataset_name, dataset_variant):
         distances_flat = [number for n in results for number in n]
         # distances_arr = np.array(distances_flat)
         # distances_arr_scaled = scale_fix(distances_arr, 0, 1)
-    np.save(main_path / f"{dataset_name}_dist_{model_type}.npy", np.array(distances_flat))
+    
+    if dataset_variant:
+        np.save(main_path / f"{dataset_name}_{dataset_variant}_dist_{model_type}.npy", np.array(distances_flat))
+    else:
+        np.save(main_path / f"{dataset_name}_dist_{model_type}.npy", np.array(distances_flat))
 
 
 def process_pairs(indices):
