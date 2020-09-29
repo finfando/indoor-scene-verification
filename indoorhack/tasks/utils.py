@@ -45,6 +45,9 @@ def get_experiment(experiment_name):
     elif experiment_name == "indoorhack-v2":
         checkpoint_path = Path(__file__).resolve().parents[2] / "checkpoints" / "indoorhack_v2" / "2020-09-21_173122" / "indoorhack_v2_18.torch"
         return IndoorHackModel(device=TORCH_DEVICE, checkpoint=checkpoint_path)
+    elif experiment_name == "indoorhack-v21":
+        checkpoint_path = Path(__file__).resolve().parents[2] / "checkpoints" / "indoorhack_v2" / "2020-09-29_114304" / "indoorhack_v2_checkpoint_58.torch"
+        return IndoorHackModel(device=TORCH_DEVICE, checkpoint=checkpoint_path)
     else:
         raise NotImplementedError
 

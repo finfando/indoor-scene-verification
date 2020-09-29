@@ -19,7 +19,7 @@ dataset, model_type_global, X = None, None, None
 )
 @click.option(
     "--model_type",
-    type=click.Choice(["hash", "orb", "netvlad", "facenet", "indoorhack-v1", "indoorhack-v2"]),
+    type=click.Choice(["hash", "orb", "netvlad", "facenet", "indoorhack-v1", "indoorhack-v2", "indoorhack-v21"]),
     required=True,
 )
 @click.option("--dataset_name", help="Name of dataset.", required=True)
@@ -83,4 +83,4 @@ def process_pairs(indices):
 
 
 if __name__ == "__main__":
-    get_distances()
+    get_distances() # pylint: disable=no-value-for-parameter

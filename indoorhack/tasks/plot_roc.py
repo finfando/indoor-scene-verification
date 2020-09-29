@@ -15,8 +15,8 @@ from config.plot import EXPERIMENT_MAP
 @click.option("--dataset_name", help="Name of dataset.", required=True)
 @click.option("--dataset_variant", help="Variant of a dataset.", multiple=True, required=False)
 @click.option(
-    "--experiment-name",
-    type=click.Choice(["hash", "orb", "netvlad", "facenet", "indoorhack-v1", "indoorhack-v2"]),
+    "--experiment_name",
+    type=click.Choice(["hash", "orb", "netvlad", "facenet", "indoorhack-v1", "indoorhack-v2", "indoorhack-v21"]),
     multiple=True,
     required=True,
 )
@@ -61,10 +61,10 @@ def plot_roc(dataset_type, dataset_name, dataset_variant, experiment_name):
         plt.grid()
         plt.xlabel("Fall-out", size=25)
         plt.ylabel("Recall", size=25)
-        # plt.ylim((-0.05,1.05))
-        # plt.xlim((-0.05,1.05))
-        plt.ylim((.8, 1))
-        plt.xlim((0, .2))
+        plt.ylim((-0.05,1.05))
+        plt.xlim((-0.05,1.05))
+        # plt.ylim((.8, 1))
+        # plt.xlim((0, .2))
         plt.xticks(fontsize=20)
         plt.yticks(fontsize=20)
         plt.legend(prop={'size': 30})
@@ -73,4 +73,5 @@ def plot_roc(dataset_type, dataset_name, dataset_variant, experiment_name):
 
 
 if __name__ == "__main__":
-    plot_roc()
+    plot_roc() # pylint: disable=no-value-for-parameter
+

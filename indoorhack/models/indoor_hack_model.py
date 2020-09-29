@@ -6,6 +6,9 @@ import torch
 from torch.utils.data import DataLoader
 from torchvision.models import vgg16
 from submodules.NetVLAD_pytorch.netvlad import NetVLAD, EmbedNet, TripletNet
+from config.env import NTHREADS
+
+dataset = None
 
 class IndoorHackModel:
     def __init__(self, device, checkpoint=None):
@@ -16,8 +19,11 @@ class IndoorHackModel:
         self.model = EmbedNet(base_model, net_vlad).to(device)
 
         if checkpoint:
-            checkpoint = torch.load(checkpoint, map_location=torch.device(self.device))
-            self.model.load_state_dict(checkpoint)
+            checkpoint = torch.load(checkpoint, map_location=torch.device(self.device)) # pylint: disable=no-member
+            if "model" in checkpoint:
+                self.model.load_state_dict(checkpoint['model'])
+            else:
+                self.model.load_state_dict(checkpoint)
         self.model.to(device)
 
     @staticmethod
@@ -27,9 +33,9 @@ class IndoorHackModel:
     def get_representations(self, save_file_path, dataset):
         dataloader = DataLoader(
             dataset, 
-            batch_size=8,
+            batch_size=64,
             shuffle=False, 
-            num_workers=4,
+            num_workers=NTHREADS,
             pin_memory=False
         )
         try:
