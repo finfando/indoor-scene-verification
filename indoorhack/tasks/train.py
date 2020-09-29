@@ -28,10 +28,11 @@ from submodules.NetVLAD_pytorch.netvlad import EmbedNet, NetVLAD
 @click.command()
 @click.option("--experiment_name", required=True)
 @click.option("--model_type", default="indoorhack")
-@click.option("--checkpoint", default=False)
+@click.option("--checkpoint", is_flag=True)
 @click.option("--epochs", default=100)
 @click.option("--stdev", required=True, type=click.INT)
-def train(experiment_name, model_type, checkpoint, epochs, stdev):
+@click.option("--lr", default=0.0001, type=click.FLOAT)
+def train(experiment_name, model_type, checkpoint, epochs, stdev, lr):
     dataset_type = "scan"
     loader = None
     transform = pipeline()
@@ -59,7 +60,7 @@ def train(experiment_name, model_type, checkpoint, epochs, stdev):
     big_model = get_model(model_type, checkpoint=checkpoint)
     model = big_model.model
     # optimizer = optim.SGD(model.parameters(), lr=0.1)
-    optimizer = optim.Adam(model.parameters(), lr=0.0001)
+    optimizer = optim.Adam(model.parameters(), lr=lr)
     criterion = OnlineTripletLoss(margin=0.1, get_triplets_fn=get_triplets)
     pdist = PairwiseDistance(2)
     for epoch in range(epochs):
@@ -94,10 +95,17 @@ def train(experiment_name, model_type, checkpoint, epochs, stdev):
                 writer.add_scalar("Loss/train", running_loss / interval, epoch * len(dataloader_train) + (i + 1))
                 running_loss = 0.0
 
-        torch.save(
-            model.state_dict(), 
-            save_path / (experiment_name + "_" + str(epoch + 1) + ".torch")
-        )
+        checkpoint = { 
+            "epoch": epoch,
+            "model": model.state_dict(),
+            "optimizer": optimizer.state_dict(),
+            # 'lr_sched': lr_sched
+        }
+        torch.save(checkpoint, save_path / (experiment_name + "_checkpoint_" + str(epoch + 1) + ".torch"))
+        # torch.save(
+        #     model.state_dict(), 
+        #     save_path / (experiment_name + "_" + str(epoch + 1) + ".torch")
+        # )
 
         model.eval()
         with torch.no_grad():

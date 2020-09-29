@@ -2,7 +2,7 @@ from pathlib import Path
 import h5py
 from torchvision.transforms import Compose, ToTensor, Normalize, Resize
 
-from config.env import TORCH_DEVICE, NETVLAD_CHECKPOINT, INDOORHACK_V6_CHECKPOINT
+from config.env import TORCH_DEVICE, NETVLAD_CHECKPOINT, INDOORHACK_CHECKPOINT
 from indoorhack.datasets import RealEstateDataset, ScanDataset
 from indoorhack.models import HashModel, ORBModel, NetVLADModel, FaceNetModel, IndoorHackModel
 from indoorhack.transforms import OpenCV2ImageFromPath
@@ -29,8 +29,8 @@ def get_model(model_type, checkpoint=True):
         return FaceNetModel(device=TORCH_DEVICE)
     elif model_type == "indoorhack":
         if checkpoint:
-            assert INDOORHACK_V6_CHECKPOINT is not None
-            return IndoorHackModel(device=TORCH_DEVICE, checkpoint=INDOORHACK_V6_CHECKPOINT)
+            assert INDOORHACK_CHECKPOINT is not None
+            return IndoorHackModel(device=TORCH_DEVICE, checkpoint=INDOORHACK_CHECKPOINT)
         else:
             return IndoorHackModel(device=TORCH_DEVICE)
     else:
