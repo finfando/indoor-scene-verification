@@ -1,0 +1,3 @@
+outs:
+- md5: 6d9f1e0e7f182be8e9b9b0ae18000953
+  path: scannet_val_10_dist_netvlad.npy

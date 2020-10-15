@@ -15,7 +15,7 @@ GIT_SSH_COMMAND='ssh -i /home/model/users/ff/.ssh/id_rsa' git push
 
     python indoorhack/tasks/generate_meta.py --dataset_type=real_estate --dataset_name=sonar
 
-### generate_pairs
+### generate_representations
 
     python indoorhack/tasks/generate_representations.py --dataset_type=real_estate --dataset_name=sonar --model_type=hash
     python indoorhack/tasks/generate_representations.py --dataset_type=real_estate --dataset_name=sonar --model_type=orb
@@ -32,3 +32,7 @@ GIT_SSH_COMMAND='ssh -i /home/model/users/ff/.ssh/id_rsa' git push
     python indoorhack/tasks/get_distances.py --dataset_type=real_estate --dataset_name=sonar --model_type=orb
     python indoorhack/tasks/get_distances.py --dataset_type=real_estate --dataset_name=sonar --model_type=netvlad
     python indoorhack/tasks/get_distances.py --dataset_type=real_estate --dataset_name=sonar --model_type=facenet
+
+## train
+
+    python indoorhack/tasks/train.py --experiment_name=indoorhackv5 --model_type=indoorhack --epochs=1000 --stdev=20 --lr=0.01

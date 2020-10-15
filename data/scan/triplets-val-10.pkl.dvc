@@ -1,0 +1,3 @@
+outs:
+- md5: 5c732660f16191ae940a99de330272db
+  path: triplets-val-10.pkl

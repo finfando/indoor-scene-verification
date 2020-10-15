@@ -1,0 +1,3 @@
+outs:
+- md5: f801a9988da5e76062b929aabfc771b0
+  path: scannet_val_meta.pkl

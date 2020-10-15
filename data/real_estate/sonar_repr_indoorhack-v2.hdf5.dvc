@@ -1,0 +1,3 @@
+outs:
+- md5: dccd6c9ef0baec56cec3c6dca93819b9
+  path: sonar_repr_indoorhack-v2.hdf5

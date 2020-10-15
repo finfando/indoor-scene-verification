@@ -1,0 +1,3 @@
+outs:
+- md5: 6cf73af2fa836493a95dc62c08217e5c
+  path: scannet_val_20_X.npy

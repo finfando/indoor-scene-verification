@@ -1,0 +1,3 @@
+outs:
+- md5: 4ec5277a03b0e89a083ad4874c721dba
+  path: scannet_val_repr_indoorhack-v2.hdf5
