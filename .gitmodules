@@ -4,10 +4,10 @@
 	branch = python3-code-adjustments
 [submodule "submodules/NetVLAD_pytorch"]
 	path = submodules/NetVLAD_pytorch
-	url = https://github.com/lyakaap/NetVLAD-pytorch
+	url = https://github.com/finfando/NetVLAD-pytorch
 [submodule "submodules/facenet_pytorch"]
 	path = submodules/facenet_pytorch
-	url = https://github.com/timesler/facenet-pytorch.git
+	url = https://github.com/finfando/facenet-pytorch.git
 [submodule "submodules/pytorch_NetVLAD"]
 	path = submodules/pytorch_NetVLAD
-	url = https://github.com/Nanne/pytorch-NetVlad.git
+	url = https://github.com/finfando/pytorch-NetVlad.git
