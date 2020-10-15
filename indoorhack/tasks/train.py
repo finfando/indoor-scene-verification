@@ -20,7 +20,7 @@ from indoorhack.models.get_triplets import get_triplets
 from indoorhack.models.loss import OnlineTripletLoss
 from indoorhack.pipelines import pipeline
 from indoorhack.samplers import CustomBatchSampler
-from indoorhack.tasks.utils import get_dataset, get_model
+from indoorhack.tasks.utils import get_dataset, get_model, EarlyStopping
 from indoorhack.utils import generate_pos_neg_plot, scale_fix
 from submodules.NetVLAD_pytorch.netvlad import EmbedNet, NetVLAD
 
@@ -60,8 +60,9 @@ def train(experiment_name, model_type, checkpoint, epochs, stdev, lr):
     big_model = get_model(model_type, checkpoint=checkpoint)
     model = big_model.model
     # optimizer = optim.SGD(model.parameters(), lr=0.1)
-    optimizer = optim.Adam(model.parameters(), lr=lr)
+    optimizer = optim.Adam(model.parameters(), lr=lr) # default=0.0001
     criterion = OnlineTripletLoss(margin=0.1, get_triplets_fn=get_triplets)
+    es = EarlyStopping(mode="max", patience=5)
     pdist = PairwiseDistance(2)
     for epoch in range(epochs):
         model.train()
@@ -70,13 +71,7 @@ def train(experiment_name, model_type, checkpoint, epochs, stdev, lr):
             tqdm(dataloader_train, desc=str(epoch + 1) + " training"), 0
         ):
             image = image.cuda()
-            # writer.add_graph(model, image)
             embeddings = model(image)
-            # writer.add_embedding(
-            #     embeddings,
-            #     metadata=class_labels,
-            #     label_img=images.unsqueeze(1)
-            # )
             try:
                 loss = criterion(embeddings, label)
             except RuntimeError as e:
@@ -102,10 +97,6 @@ def train(experiment_name, model_type, checkpoint, epochs, stdev, lr):
             # 'lr_sched': lr_sched
         }
         torch.save(checkpoint, save_path / (experiment_name + "_checkpoint_" + str(epoch + 1) + ".torch"))
-        # torch.save(
-        #     model.state_dict(), 
-        #     save_path / (experiment_name + "_" + str(epoch + 1) + ".torch")
-        # )
 
         model.eval()
         with torch.no_grad():
@@ -124,6 +115,8 @@ def train(experiment_name, model_type, checkpoint, epochs, stdev, lr):
             auc_score = roc_auc_score(np.array(labels), 1 - distances_sc)
             print("(val)[%d] auc: %.3f" % (epoch + 1, auc_score))
             writer.add_scalar("AUC/val", auc_score, epoch + 1)
+        if es.step(auc_score):
+            break
 
 
 def get_meta(dataset_type, dataset_name):
