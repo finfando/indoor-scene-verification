@@ -1,5 +1,10 @@
 from pathlib import Path
 import os
+from dotenv import load_dotenv
+
+
+env_path = Path(__file__).resolve().parents[1] / '.env'
+load_dotenv(dotenv_path=env_path)
 
 TORCH_DEVICE = os.getenv("TORCH_DEVICE", "cpu")
 NETVLAD_CHECKPOINT = os.getenv("NETVLAD_CHECKPOINT")

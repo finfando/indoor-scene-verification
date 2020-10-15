@@ -1,0 +1,7 @@
+stages:
+  indoorhack-v10:
+    cmd: python ../indoorhack/tasks/train.py --experiment_name=indoorhack-v5-30 --model_type=indoorhack
+      --epochs=1000 --stdev=30 --lr=.0001
+    outs:
+    - ./indoorhack-v5-30.done
+    - ./indoorhack-v5-30.torch

@@ -115,7 +115,11 @@ def train(experiment_name, model_type, checkpoint, epochs, stdev, lr):
             auc_score = roc_auc_score(np.array(labels), 1 - distances_sc)
             print("(val)[%d] auc: %.3f" % (epoch + 1, auc_score))
             writer.add_scalar("AUC/val", auc_score, epoch + 1)
+        if es.best is None or auc_score > es.best:
+            torch.save(checkpoint, Path(__file__).resolve().parents[2] / "experiments" / (experiment_name + ".torch"))
         if es.step(auc_score):
+            p = Path(__file__).resolve().parents[2] / "experiments" / (experiment_name + ".done")
+            p.touch()
             break
 
 
