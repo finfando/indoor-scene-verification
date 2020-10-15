@@ -2,4 +2,3 @@
     remote = gs
 ['remote "gs"']
     url = gs://indoorhack/dvc/
-    credentialpath = /home/filip_finfando_com/certain-benefit-280209-ecbe4cfd7db1.json
