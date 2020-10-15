@@ -1,0 +1,3 @@
+outs:
+- md5: 4a8920ff6db6074d07fb7ee7b0d83294
+  path: scannet_train_meta.pkl

@@ -1,0 +1,3 @@
+outs:
+- md5: b139a4eaec1342520db666aa9e77dc93
+  path: scannet_val_30_dist_indoorhack-v2.npy
