@@ -16,8 +16,8 @@ from tqdm.auto import tqdm
 
 from config.env import SCAN_DATA_PATH, TORCH_DEVICE
 from indoorhack.models import IndoorHackModel
-from indoorhack.models.tools import get_triplets
-from indoorhack.models.loss import OnlineTripletLoss
+from indoorhack.models.tools import get_pos_pairs_with_seqdist
+from indoorhack.models.loss import SeqLoss
 from indoorhack.pipelines import pipeline
 from indoorhack.samplers import CustomBatchSampler
 from indoorhack.tasks.utils import get_dataset, get_model, EarlyStopping
@@ -32,7 +32,8 @@ from submodules.NetVLAD_pytorch.netvlad import EmbedNet, NetVLAD
 @click.option("--epochs", default=100)
 @click.option("--stdev", required=True, type=click.INT)
 @click.option("--lr", default=0.0001, type=click.FLOAT)
-def train(experiment_name, model_type, checkpoint, epochs, stdev, lr):
+@click.option("--scheduler", is_flag=True)
+def train(experiment_name, model_type, checkpoint, epochs, stdev, lr, scheduler):
     dataset_type = "scan"
     loader = None
     transform = pipeline()
@@ -44,7 +45,7 @@ def train(experiment_name, model_type, checkpoint, epochs, stdev, lr):
     writer = SummaryWriter(log_dir=writer_path)
 
     # train dataset
-    dataloader_train = prepare_train_dataloader(loader, transform, stdev)
+    dataloader_train = prepare_train_dataloader(loader, transform, stdev, return_seq=True,)
 
     # val dataset
     dataset_val = get_dataset(
@@ -53,7 +54,7 @@ def train(experiment_name, model_type, checkpoint, epochs, stdev, lr):
         meta=get_meta(dataset_type, "scannet_val"),
         loader=loader,
         transform=transform,
-        use_label_encoding=True,
+        use_label_encoding=True
     )
     validation_set = prepare_val_dataset()
 
@@ -61,19 +62,21 @@ def train(experiment_name, model_type, checkpoint, epochs, stdev, lr):
     model = big_model.model
     # optimizer = optim.SGD(model.parameters(), lr=0.1)
     optimizer = optim.Adam(model.parameters(), lr=lr) # default=0.0001
-    criterion = OnlineTripletLoss(margin=0.1, get_triplets_fn=get_triplets)
+    if scheduler:
+        scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=30, gamma=0.1)
+    criterion = SeqLoss(coeff=0.00001, get_pairs_fn=get_pos_pairs_with_seqdist)
     es = EarlyStopping(mode="max", patience=15)
     pdist = PairwiseDistance(2)
     for epoch in range(epochs):
         model.train()
         running_loss = 0.0
-        for i, (image, label) in enumerate(
+        for i, (image, label, seq) in enumerate(
             tqdm(dataloader_train, desc=str(epoch + 1) + " training"), 0
         ):
             image = image.cuda()
             embeddings = model(image)
             try:
-                loss = criterion(embeddings, label)
+                loss = criterion(embeddings, label, seq)
             except RuntimeError as e:
                 print(e)
                 continue
@@ -154,7 +157,7 @@ def prepare_val_dataset():
     return validation_set
 
 
-def prepare_train_dataloader(loader, transform, stdev):
+def prepare_train_dataloader(loader, transform, stdev, return_seq=False):
     dataset_train = get_dataset(
         "scan",
         path=SCAN_DATA_PATH / "scannet_train",
@@ -162,6 +165,7 @@ def prepare_train_dataloader(loader, transform, stdev):
         loader=loader,
         transform=transform,
         use_label_encoding=True,
+        return_seq=return_seq,
     )
     sampler = CustomBatchSampler(
         dataset_train,

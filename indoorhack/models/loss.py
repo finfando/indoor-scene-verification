@@ -15,3 +15,17 @@ class OnlineTripletLoss(nn.Module):
         hinge_dist = torch.clamp(self.margin + pos_dist - neg_dist, min=0.0)
         loss = torch.mean(hinge_dist)
         return loss
+
+class SeqLoss(nn.Module):
+    def __init__(self, coeff, get_pairs_fn):
+        super(SeqLoss, self).__init__()
+        self.coeff = coeff
+        self.get_pairs_fn = get_pairs_fn
+        
+    def forward(self, embedding, label, seq):
+        embedding = embedding.cpu()
+        label = label.cpu().data.numpy()
+        pairs, dists, seqs = self.get_pairs_fn(embedding, label, seq)
+        hinge_dist = torch.clamp(self.coeff * (seqs**2) - dists, min=0.0)
+        loss = torch.mean(hinge_dist)
+        return loss

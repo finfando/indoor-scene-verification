@@ -49,3 +49,23 @@ def get_triplets(embeddings, labels):
             pos_dist_out.append(d)
             neg_dist_out.append(neg_dists[idx])
     return triplets, torch.stack(pos_dist_out), torch.stack(neg_dist_out)
+
+
+def get_pos_pairs_with_seqdist(embeddings, labels, seqs):
+    pdist = PairwiseDistance(2)
+    pos_pairs_out = []
+    pos_dists_out = []
+    pos_seqs_out = []
+    for l in np.unique(labels):
+        mask = (l == labels)
+        pos_indices = np.where(mask)[0]
+
+        pos_pairs = np.array(list(combinations(pos_indices, 2)))
+        pos_dists = pdist(embeddings[pos_pairs[:,0]], embeddings[pos_pairs[:,1]])
+        pos_seqs = abs(seqs[pos_pairs[:,0]] - seqs[pos_pairs[:,1]])
+        
+        pos_pairs_out.append(pos_pairs)
+        pos_dists_out.append(pos_dists)
+        pos_seqs_out.append(pos_seqs)
+
+    return np.vstack(pos_pairs_out), torch.stack(pos_dists_out).flatten(), torch.stack(pos_seqs_out)

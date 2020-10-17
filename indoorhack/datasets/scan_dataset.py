@@ -8,10 +8,11 @@ from torchvision.datasets.folder import default_loader
 
 
 class ScanDataset(Dataset):
-    def __init__(self, path: str, meta=None, loader=None, transform=None, use_label_encoding=False):
+    def __init__(self, path: str, meta=None, loader=None, transform=None, use_label_encoding=False, return_seq=False):
         self.path = Path(path)
         self.transform = transform
         self.le = None
+        self.return_seq = return_seq
         
         if loader:
             self.loader = loader
@@ -39,10 +40,15 @@ class ScanDataset(Dataset):
         if self.transform is not None:
             sample = self.transform(sample)
 
+        item = (sample, )
         if self.le:
-            return sample, self.le.transform([meta[0]])
+            item += (self.le.transform([meta[0]]), )
         else:
-            return sample, meta
+            item += (meta, )
+
+        if self.return_seq:
+            item += (np.array([int(meta[2])]), )
+        return item
 
     def __len__(self):
         return len(self.images)
