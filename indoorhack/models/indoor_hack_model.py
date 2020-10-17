@@ -4,16 +4,19 @@ import cv2 as cv
 from tqdm.auto import tqdm
 import torch
 from torch.utils.data import DataLoader
-from torchvision.models import vgg16
+from torchvision.models import vgg16, mobilenet_v2
 from submodules.NetVLAD_pytorch.netvlad import NetVLAD, EmbedNet, TripletNet
 from config.env import NTHREADS
 
 dataset = None
 
 class IndoorHackModel:
-    def __init__(self, device, checkpoint=None):
+    def __init__(self, device, base_model_architecture="vgg16", checkpoint=None):
         self.device = device
-        base_model = vgg16(pretrained=True).features
+        if base_model_architecture == "vgg16":
+            base_model = vgg16(pretrained=True).features
+        if base_model_architecture == "mobilenetv2":
+            base_model = mobilenet_v2(pretrained=True).features
         dim = list(base_model.parameters())[-1].shape[0]
         net_vlad = NetVLAD(num_clusters=32, dim=dim, alpha=1.0)
         self.model = EmbedNet(base_model, net_vlad).to(device)

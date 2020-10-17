@@ -35,6 +35,8 @@ def get_model(model_type, checkpoint=True):
             return IndoorHackModel(device=TORCH_DEVICE, checkpoint=INDOORHACK_CHECKPOINT)
         else:
             return IndoorHackModel(device=TORCH_DEVICE)
+    elif model_type == "indoorhack-mobilenetv2":
+        return IndoorHackModel(device=TORCH_DEVICE, base_model_architecture="mobilenetv2")
     else:
         raise NotImplementedError
 
