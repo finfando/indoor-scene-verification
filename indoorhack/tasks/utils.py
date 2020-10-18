@@ -55,6 +55,37 @@ def get_experiment(experiment_name):
     elif experiment_name == "indoorhack-v7-20":
         checkpoint_path = Path(__file__).resolve().parents[2] / "experiments" / "v6" / "indoorhack-v7-20.torch"
         return IndoorHackModel(device=TORCH_DEVICE, checkpoint=checkpoint_path)
+
+
+    elif experiment_name == "innetvlad-v1-10":
+        checkpoint_path = Path(__file__).resolve().parents[2] / "experiments" / "innetvlad-v1" / "indoorhack-v7-10.torch"
+        return IndoorHackModel(device=TORCH_DEVICE, checkpoint=checkpoint_path)
+    elif experiment_name == "innetvlad-v1-20":
+        checkpoint_path = Path(__file__).resolve().parents[2] / "experiments" / "innetvlad-v1" / "indoorhack-v7-20.torch"
+        return IndoorHackModel(device=TORCH_DEVICE, checkpoint=checkpoint_path)
+    elif experiment_name == "innetvlad-v1-30":
+        checkpoint_path = Path(__file__).resolve().parents[2] / "experiments" / "innetvlad-v1" / "indoorhack-v7-30.torch"
+        return IndoorHackModel(device=TORCH_DEVICE, checkpoint=checkpoint_path)
+
+    elif experiment_name == "innetvlad-v2-10":
+        checkpoint_path = Path(__file__).resolve().parents[2] / "experiments" / "innetvlad-v2" / "indoorhack-v10-10.torch"
+        return IndoorHackModel(device=TORCH_DEVICE, checkpoint=checkpoint_path)
+    elif experiment_name == "innetvlad-v2-20":
+        checkpoint_path = Path(__file__).resolve().parents[2] / "experiments" / "innetvlad-v2" / "indoorhack-v10-20.torch"
+        return IndoorHackModel(device=TORCH_DEVICE, checkpoint=checkpoint_path)
+    elif experiment_name == "innetvlad-v2-30":
+        checkpoint_path = Path(__file__).resolve().parents[2] / "experiments" / "innetvlad-v2" / "indoorhack-v10-30.torch"
+        return IndoorHackModel(device=TORCH_DEVICE, checkpoint=checkpoint_path)
+
+    elif experiment_name == "innetvlad-v3-10":
+        checkpoint_path = Path(__file__).resolve().parents[2] / "experiments" / "innetvlad-v3" / "indoorhack-v12-10.torch"
+        return IndoorHackModel(device=TORCH_DEVICE, checkpoint=checkpoint_path)
+    elif experiment_name == "innetvlad-v3-20":
+        checkpoint_path = Path(__file__).resolve().parents[2] / "experiments" / "innetvlad-v3" / "indoorhack-v12-20.torch"
+        return IndoorHackModel(device=TORCH_DEVICE, checkpoint=checkpoint_path)
+    elif experiment_name == "innetvlad-v3-30":
+        checkpoint_path = Path(__file__).resolve().parents[2] / "experiments" / "innetvlad-v3" / "indoorhack-v12-30.torch"
+        return IndoorHackModel(device=TORCH_DEVICE, checkpoint=checkpoint_path)
     else:
         raise NotImplementedError
 
@@ -71,7 +102,7 @@ def get_loader(model_type=None, repr_path=None, dataset_type="real_estate"):
 
 
 def get_transformer(model_type):
-    if model_type in ["netvlad", "facenet", "indoorhack-v1"] or model_type.startswith("indoorhack"):
+    if model_type in ["netvlad", "facenet"] or model_type.startswith("indoorhack"):
         return Compose([
             Resize((224, 224)),
             ToTensor(),

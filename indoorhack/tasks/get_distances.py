@@ -10,23 +10,19 @@ from indoorhack.tasks.utils import (get_dataset, get_experiment, get_loader,
                                     get_model)
 from config.env import NTHREADS
 
-dataset, model_type_global, X = None, None, None
+dataset, experiment_name_global, X = None, None, None
 
 
 @click.command()
 @click.option(
     "--dataset_type", type=click.Choice(["scan", "real_estate"]), required=True
 )
-@click.option(
-    "--model_type",
-    type=click.Choice(["hash", "orb", "netvlad", "facenet", "indoorhack-v1", "indoorhack-v2", "indoorhack-v21"]),
-    required=True,
-)
+@click.option("--experiment_name", required=True)
 @click.option("--dataset_name", help="Name of dataset.", required=True)
 @click.option("--dataset_variant", help="Variant of a dataset.", required=False)
-def get_distances(dataset_type, model_type, dataset_name, dataset_variant):
-    global dataset, model_type_global, X
-    model_type_global = model_type
+def get_distances(dataset_type, experiment_name, dataset_name, dataset_variant):
+    global dataset, experiment_name_global, X
+    experiment_name_global = experiment_name
     main_path = Path(__file__).resolve().parents[2] / "data" / dataset_type
     if dataset_variant:
         X = np.load(main_path / f"{dataset_name}_{dataset_variant}_X.npy")
@@ -37,7 +33,7 @@ def get_distances(dataset_type, model_type, dataset_name, dataset_variant):
 
     dataset_path = main_path / dataset_name
     meta_path = main_path / f"{dataset_name}_meta.pkl"
-    repr_path = main_path / f"{dataset_name}_repr_{model_type}.hdf5"
+    repr_path = main_path / "representations" / f"{dataset_name}_repr_{experiment_name}.hdf5"
 
     loader = get_loader(repr_path=repr_path, dataset_type=dataset_type)
     transform = None
@@ -63,13 +59,13 @@ def get_distances(dataset_type, model_type, dataset_name, dataset_variant):
         # distances_arr_scaled = scale_fix(distances_arr, 0, 1)
     
     if dataset_variant:
-        np.save(main_path / f"{dataset_name}_{dataset_variant}_dist_{model_type}.npy", np.array(distances_flat))
+        np.save(main_path / "distances" / f"{dataset_name}_{dataset_variant}_dist_{experiment_name}.npy", np.array(distances_flat))
     else:
-        np.save(main_path / f"{dataset_name}_dist_{model_type}.npy", np.array(distances_flat))
+        np.save(main_path / "distances" / f"{dataset_name}_dist_{experiment_name}.npy", np.array(distances_flat))
 
 
 def process_pairs(indices):
-    global dataset, model_type_global, X
+    global dataset, experiment_name_global, X
     print(
         " ", end="", flush=True
     )  # hack for printing tqdm progress bar when using multiprocessing
@@ -78,7 +74,7 @@ def process_pairs(indices):
         im1_idx, im2_idx = X[i]
         im1 = dataset[im1_idx][0]
         im2 = dataset[im2_idx][0]
-        distances.append(get_experiment(model_type_global).distance(im1, im2))
+        distances.append(get_experiment(experiment_name_global).distance(im1, im2))
     return distances
 
 
