@@ -16,8 +16,8 @@ from tqdm.auto import tqdm
 
 from config.env import SCAN_DATA_PATH, TORCH_DEVICE
 from indoorhack.models import IndoorHackModel
-from indoorhack.models.tools import get_pos_pairs_with_seqdist
-from indoorhack.models.loss import SeqLoss
+from indoorhack.models.tools import get_triplets
+from indoorhack.models.loss import BetaOnlineTripletLoss
 from indoorhack.pipelines import pipeline
 from indoorhack.samplers import CustomBatchSampler
 from indoorhack.tasks.utils import get_dataset, get_model, EarlyStopping
@@ -45,7 +45,7 @@ def train(experiment_name, model_type, checkpoint, epochs, stdev, lr, scheduler)
     writer = SummaryWriter(log_dir=writer_path)
 
     # train dataset
-    dataloader_train = prepare_train_dataloader(loader, transform, stdev, return_seq=True,)
+    dataloader_train = prepare_train_dataloader(loader, transform, stdev, return_seq=False)
 
     # val dataset
     dataset_val = get_dataset(
@@ -62,19 +62,19 @@ def train(experiment_name, model_type, checkpoint, epochs, stdev, lr, scheduler)
     model = big_model.model
     # optimizer = optim.SGD(model.parameters(), lr=0.1)
     optimizer = optim.Adam(model.parameters(), lr=lr) # default=0.0001
-    criterion = SeqLoss(coeff=(1/30), get_pairs_fn=get_pos_pairs_with_seqdist)
+    criterion = BetaOnlineTripletLoss(alpha=0.1, beta=0.05, get_triplets_fn=get_triplets)
     es = EarlyStopping(mode="max", patience=15)
     pdist = PairwiseDistance(2)
     for epoch in range(epochs):
         model.train()
         running_loss = 0.0
-        for i, (image, label, seq) in enumerate(
+        for i, (image, label) in enumerate(
             tqdm(dataloader_train, desc=str(epoch + 1) + " training"), 0
         ):
             image = image.cuda()
             embeddings = model(image)
             try:
-                loss = criterion(embeddings, label, seq)
+                loss = criterion(embeddings, label)
             except RuntimeError as e:
                 print(e)
                 continue
