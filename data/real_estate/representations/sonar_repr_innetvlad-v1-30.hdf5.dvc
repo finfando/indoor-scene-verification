@@ -1,0 +1,3 @@
+outs:
+- md5: 43683f860412034ff7d875518c65500f
+  path: sonar_repr_innetvlad-v1-30.hdf5
