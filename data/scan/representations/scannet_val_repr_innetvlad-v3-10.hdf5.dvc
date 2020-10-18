@@ -1,0 +1,3 @@
+outs:
+- md5: 03554872de14b18f42a4b7b91db63a95
+  path: scannet_val_repr_innetvlad-v3-10.hdf5
