@@ -70,11 +70,12 @@ def process_pairs(indices):
         " ", end="", flush=True
     )  # hack for printing tqdm progress bar when using multiprocessing
     distances = []
+    model = get_experiment(experiment_name_global)
     for i in tqdm(indices):
         im1_idx, im2_idx = X[i]
         im1 = dataset[im1_idx][0]
         im2 = dataset[im2_idx][0]
-        distances.append(get_experiment(experiment_name_global).distance(im1, im2))
+        distances.append(model.distance(im1, im2))
     return distances
 
 
