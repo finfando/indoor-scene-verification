@@ -3,6 +3,10 @@
 **/**/*.hdf5
 **/**/events.out.tfevents.*
 **/**/*.pdf
+notebooks/
+backup/
+google.json
+logs/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
