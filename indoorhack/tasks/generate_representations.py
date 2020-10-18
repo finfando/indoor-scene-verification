@@ -7,7 +7,7 @@ from config.env import SCAN_DATA_PATH
 
 @click.command()
 @click.option("--dataset_type", type=click.Choice(["scan", "real_estate"]), required=True)
-@click.option("--model_type", type=click.Choice(["hash", "orb", "netvlad", "facenet", "indoorhack"]), required=True)
+@click.option("--model_type", type=click.Choice(["hash", "orb", "netvlad", "facenet", "indoorhack", "indoorhack-mobilenetv2"]), required=True)
 @click.option("--experiment_name", required=True)
 @click.option("--dataset_name", help="Name of dataset.", required=True)
 @click.option("--val_only", help="Generate only representations of images in val dataset", is_flag=True)

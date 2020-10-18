@@ -69,13 +69,13 @@ def get_experiment(experiment_name):
 
     elif experiment_name == "innetvlad-v2-10":
         checkpoint_path = Path(__file__).resolve().parents[2] / "experiments" / "innetvlad-v2" / "indoorhack-v10-10.torch"
-        return IndoorHackModel(device=TORCH_DEVICE, checkpoint=checkpoint_path)
+        return IndoorHackModel(device=TORCH_DEVICE, checkpoint=checkpoint_path, base_model_architecture="mobilenetv2")
     elif experiment_name == "innetvlad-v2-20":
         checkpoint_path = Path(__file__).resolve().parents[2] / "experiments" / "innetvlad-v2" / "indoorhack-v10-20.torch"
-        return IndoorHackModel(device=TORCH_DEVICE, checkpoint=checkpoint_path)
+        return IndoorHackModel(device=TORCH_DEVICE, checkpoint=checkpoint_path, base_model_architecture="mobilenetv2")
     elif experiment_name == "innetvlad-v2-30":
         checkpoint_path = Path(__file__).resolve().parents[2] / "experiments" / "innetvlad-v2" / "indoorhack-v10-30.torch"
-        return IndoorHackModel(device=TORCH_DEVICE, checkpoint=checkpoint_path)
+        return IndoorHackModel(device=TORCH_DEVICE, checkpoint=checkpoint_path, base_model_architecture="mobilenetv2")
 
     elif experiment_name == "innetvlad-v3-10":
         checkpoint_path = Path(__file__).resolve().parents[2] / "experiments" / "innetvlad-v3" / "indoorhack-v12-10.torch"
