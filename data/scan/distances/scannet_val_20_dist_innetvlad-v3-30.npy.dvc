@@ -1,0 +1,3 @@
+outs:
+- md5: b4cd155be61f5c82eeb5d027be95d801
+  path: scannet_val_20_dist_innetvlad-v3-30.npy
