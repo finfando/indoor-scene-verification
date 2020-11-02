@@ -1,0 +1,3 @@
+outs:
+- md5: 5d36b3880551678c12553d98839f393b
+  path: roc_scannet_val_netvlad_innetvlad-v1-30_innetvlad-v2-30_innetvlad-v3-30.pdf
