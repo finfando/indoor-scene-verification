@@ -1,0 +1,3 @@
+outs:
+- md5: 7fd966628f8a4ebc388f2d85d10f8939
+  path: sonar_dist_innetvlad-v3-20.npy
