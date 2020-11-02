@@ -1,7 +1,7 @@
 **/**/*.torch
 **/**/*.npy
 **/**/*.hdf5
-**/**/events.out.tfevents.*
+**/**/events.out.tfevents.*.0
 **/**/*.pdf
 notebooks/
 backup/
@@ -142,4 +142,3 @@ dmypy.json
 *.pkl
 *.sens
 .vscode/
-/runs
