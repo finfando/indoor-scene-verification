@@ -1,0 +1,3 @@
+outs:
+- md5: 24dd0757340e020f2b03ce530706c6a4
+  path: events.out.tfevents.1602958823.indoorhack-1.30038.0
